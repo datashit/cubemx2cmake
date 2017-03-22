@@ -6,6 +6,28 @@ from argparse import ArgumentParser
 from configparser import ConfigParser
 from string import Template
 from pkg_resources import resource_filename
+from xml.etree import ElementTree
+
+with open('.cproject', 'rt') as f:
+    tree = ElementTree.parse(f)
+
+
+def getDef():
+    definition = ""
+    for node in tree.iter('cconfiguration'):
+        for opt in node.iter('option'):
+            if(opt.attrib.get('superClass') == 'gnu.c.compiler.option.preprocessor.def.symbols'):
+                for listOpt in opt.iter('listOptionValue'):
+                            value = ""
+                            if listOpt.attrib.get('value').find('weak') != -1:
+                                value = '\'-D' + listOpt.attrib.get('value') + '\''
+                            elif listOpt.attrib.get('value').find('packed') != -1:
+                                value = '\'-D' + listOpt.attrib.get('value') + '\''
+                            else:
+                                value = '-D' + listOpt.attrib.get('value')
+                            definition += 'add_definitions('+ value +')\n'
+        break
+    return definition
 
 
 def main():
@@ -73,6 +95,7 @@ def _main(args):
         mcu_family = cube_config["mcu.family"]
         mcu_username = cube_config["mcu.username"]
         prj_name = cube_config["projectmanager.projectname"]
+        make_defination = getDef()
     except KeyError:
         print("Input file is broken!")
         exit(0)
@@ -86,7 +109,8 @@ def _main(args):
         "TARGET": mcu_family+"x",
         "INTERFACE_NAME": args.interface,
         "GDB_PORT": args.gdb_port,
-        "TELNET_PORT": args.telnet_port
+        "TELNET_PORT": args.telnet_port,
+    "MAKE_DEFINATION": make_defination
     }
 
     templates = os.listdir(resource_filename(__name__, "templates"))
@@ -96,7 +120,7 @@ def _main(args):
         with open(template_fn, "r") as template_file:
             template = Template(template_file.read())
         try:
-            with open(template_name, "w") as target_file:
+            with open(template_name.replace(".template",""), "w") as target_file:
                 target_file.write(template.safe_substitute(params))
         except IOError:
             print("Cannot write output files! Maybe write access to the current directory is denied.")
@@ -105,3 +129,4 @@ def _main(args):
     print("All files were successfully generated!")
 
     return params
+

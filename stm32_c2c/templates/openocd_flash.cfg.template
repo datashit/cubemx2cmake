@@ -5,4 +5,5 @@ reset init
 halt
 flash write_image erase build/${PRJ_NAME}.bin ${FLASH_START}
 verify_image build/${PRJ_NAME}.bin ${FLASH_START}
+reset run
 shutdown

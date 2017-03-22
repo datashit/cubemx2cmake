@@ -9,8 +9,8 @@ def readme():
         return readme_file.read()
 
 setup(
-    name='cubemx2cmake',
-    version='1.2',
+    name='stm32_c2c',
+    version='1',
     description='Command line tool to generate CMakeLists.txt from STM32CubeMX projects.',
     long_description=readme(),
     classifiers=[
@@ -18,9 +18,9 @@ setup(
         'Topic :: Utilities'
     ],
     keywords='st stm32 cube cubemx stm32cubemx cmake code generator',
-    url='https://github.com/eugene-babichenko/cubemx2cmake',
-    author='Yevhenii Babichenko',
-    author_email='eugene.babichenko@gmail.com',
+    url='https://github.com/datashit/stm32_c2c',
+    author='Yigit YILDIIRM',
+    author_email='yigit@yildirim.me',
     license='MIT',
     packages=['cubemx2cmake'],
     zip_safe=False,
