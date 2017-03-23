@@ -1,6 +1,4 @@
-""" This is the implementation of stm32_c2c command """
-
-
+""" This is the implementation of cubemx2cmake command """
 
 import shutil
 import os.path
